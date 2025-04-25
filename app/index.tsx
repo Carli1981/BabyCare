@@ -12,7 +12,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       await loginUser(email, password);
-      router.replace("/home"); // Navegar a Home al iniciar sesión
+      router.replace("/setup"); // Navegar a Home al iniciar sesión
     } catch (e: any) {
       setError("Error al iniciar sesión");
     }
