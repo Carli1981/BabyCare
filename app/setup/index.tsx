@@ -1,4 +1,5 @@
-import { View, Text, Button } from 'react-native';
+// app/setup/index.tsx
+import { View, Text, Button, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 
 export default function HaNacidoScreen() {
@@ -6,10 +7,22 @@ export default function HaNacidoScreen() {
   const handleNo = () => router.replace('/home');
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>¿Ha nacido el bebé?</Text>
-      <Button title="Sí" onPress={handleYes} />
-      <Button title="No" onPress={handleNo} />
+    <View style={styles.container}>
+      <Text style={styles.title}>¿Ha nacido el bebé?</Text>
+
+      <View style={styles.buttonContainer}>
+        <Button title="Sí" onPress={handleYes} />
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <Button title="No" onPress={handleNo} color="gray" />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  title: { fontSize: 20, marginBottom: 30 },
+  buttonContainer: { marginVertical: 10, width: '60%' },
+});

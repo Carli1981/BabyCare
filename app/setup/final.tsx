@@ -1,6 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useBabyContext } from '../../src/context/BabyContext';
-import { saveBabyData } from '../../src/services/babyService'; // Corregir la ruta aquí
+import { saveBabyData } from '../../src/services/babyService';
+import { View, Text, Button } from 'react-native';
+import { auth } from '../../src/config/firebase';
 
 export default function FinalScreen() {
   const { babyData, resetBabyData } = useBabyContext();
@@ -8,12 +10,13 @@ export default function FinalScreen() {
 
   const handleSave = async () => {
     try {
+      const userId = auth.currentUser?.uid;
+      if (!userId) throw new Error('Usuario no autenticado');
+
       if (babyData.name && babyData.birthdate) {
-        // Asumiendo que babyData tiene un babyId, si no, puedes generar uno
-        const babyId = 'some-unique-id'; 
-        await saveBabyData(babyId, babyData); 
-        resetBabyData(); // Limpiar datos del contexto
-        router.push('/home'); // Redirigir a la página principal
+        await saveBabyData(userId, babyData); 
+        resetBabyData(); 
+        router.replace('/home');
       }
     } catch (error) {
       console.error('Error al guardar los datos:', error);
