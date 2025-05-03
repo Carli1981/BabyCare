@@ -1,6 +1,6 @@
-// app/setup/index.tsx
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import { router } from 'expo-router';
+import { styles } from '../../src/styles/setupStyles';
 
 export default function HaNacidoScreen() {
   const handleYes = () => router.push('/setup/nombre');
@@ -20,9 +20,3 @@ export default function HaNacidoScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  title: { fontSize: 20, marginBottom: 30 },
-  buttonContainer: { marginVertical: 10, width: '60%' },
-});

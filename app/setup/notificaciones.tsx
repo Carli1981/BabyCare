@@ -1,30 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { View, Button, Text } from 'react-native';
+import React from 'react';
+import { View, Text, Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
+import { styles } from '../../src/styles/setupStyles';
+import { useBabyContext } from '../../src/context/BabyContext';
+import { auth } from '../../src/config/firebase';
+import { saveBabyData } from '../../src/services/babyService';
+import OpcionBoton from '../../src/components/OpcionBoton';
 
 export default function NotificacionesScreen() {
   const router = useRouter();
+  const { babyData } = useBabyContext();
 
-  // Función para solicitar permisos para las notificaciones
-  const requestNotificationPermission = async () => {
-    const { status } = await Notifications.requestPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Permiso de notificación no concedido');
-    } else {
-      alert('Permiso concedido para las notificaciones');
+  const handleSave = async () => {
+    const userId = auth.currentUser?.uid;
+    if (!userId) {
+      alert("Usuario no autenticado.");
+      return;
+    }
+
+    try {
+      await saveBabyData(userId, babyData);
+      router.replace('/home');
+    } catch (error) {
+      console.error("Error al guardar datos del bebé:", error);
+      alert("Hubo un error al guardar los datos del bebé.");
     }
   };
 
-  // Llamar a la función para solicitar el permiso de notificación al montar el componente
-  useEffect(() => {
-    requestNotificationPermission();
-  }, []);
+  const handleAllowNotifications = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status === 'granted') {
+      Alert.alert("Notificaciones activadas");
+    } else {
+      Alert.alert("Permiso de notificaciones denegado");
+    }
+    handleSave();
+  };
+
+  const handleDenyNotifications = () => {
+    handleSave(); // Puedes guardar sin activar notificaciones
+  };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>¿Permitir notificaciones?</Text>
-      <Button title="Permitir" onPress={() => router.push('/home')} />
+    <View style={styles.container}>
+      <Text style={styles.title}>¿Deseas recibir notificaciones?</Text>
+      <OpcionBoton texto="Sí" onPress={handleAllowNotifications} />
+      <OpcionBoton texto="No" onPress={handleDenyNotifications} />
     </View>
   );
 }

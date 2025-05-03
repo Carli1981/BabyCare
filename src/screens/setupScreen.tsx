@@ -1,3 +1,5 @@
+// src/screens/setup/FinalScreen.tsx
+
 import { useRouter } from 'expo-router';
 import { useBabyContext } from '../../src/context/BabyContext';
 import { saveBabyData } from '../../src/services/babyService';
@@ -12,18 +14,14 @@ export default function FinalScreen() {
   const handleSave = async () => {
     try {
       const userId = auth.currentUser?.uid;
-  
-      console.log("UID del usuario:", userId);
-      console.log("Datos del bebé:", babyData);
-  
       if (!userId) throw new Error('Usuario no autenticado');
-  
+
       if (babyData.name && babyData.birthdate) {
+        // Guardamos los datos del bebé en Firestore
         await saveBabyData(userId, babyData);
-        resetBabyData();
-        router.replace('/home'); // asegúrate que /home existe
-      } else {
-        console.log("Faltan datos del bebé");
+        
+        resetBabyData(); // Limpiamos los datos del contexto
+        router.replace('/home'); // Navegamos a la página de inicio
       }
     } catch (error) {
       console.error('Error al guardar los datos:', error);
@@ -32,10 +30,8 @@ export default function FinalScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¡Todo listo! ¿Guardar los datos de tu bebé?</Text>
-      <View style={styles.buttonContainer}>
-        <Button title="Guardar" onPress={handleSave} color="#007AFF" />
-      </View>
+      <Text style={styles.question}>¡Todo listo! ¿Guardar los datos de tu bebé?</Text>
+      <Button title="Guardar" onPress={handleSave} />
     </View>
   );
 }

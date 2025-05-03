@@ -1,8 +1,10 @@
-// firebase.tsx
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // 
+// src/config/firebase.ts
 
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+
+// Tu configuración de Firebase (asegúrate de colocar tus credenciales aquí)
 const firebaseConfig = {
   apiKey: "AIzaSyDOMLz42uPOUNbuE0XR8ntHEsanjyYcUMw",
   authDomain: "babycare-25580.firebaseapp.com",
@@ -13,7 +15,9 @@ const firebaseConfig = {
   measurementId: "G-4VMT6YLRY6"
 };
 
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+export { db, auth };

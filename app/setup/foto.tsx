@@ -3,6 +3,7 @@ import { View, Button, Text, Image, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useBabyContext } from '../../src/context/BabyContext';
 import { useRouter } from 'expo-router';
+import { styles } from '../../src/styles/setupStyles';
 
 export default function FotoScreen() {
   const { updateBabyData } = useBabyContext();
@@ -23,7 +24,7 @@ export default function FotoScreen() {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: Platform.OS !== 'web', // En web puede fallar
+        allowsEditing: Platform.OS !== 'web', 
         aspect: [4, 3],
         quality: 1,
       });
@@ -45,16 +46,16 @@ export default function FotoScreen() {
   };
 
   return (
-    <View style={{ padding: 20, alignItems: 'center' }}>
-      <Text>¿Quieres añadir una foto de tu bebé?</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>¿Quieres añadir una foto de tu bebé?</Text>
 
       {image && (
-        <Image source={{ uri: image }} style={{ width: 200, height: 200, marginVertical: 10, borderRadius: 10 }} />
+        <Image source={{ uri: image }} style={styles.photoImage} />
       )}
 
       <Button title="Seleccionar foto" onPress={handlePickImage} />
 
-      <View style={{ marginVertical: 10 }}>
+      <View style={styles.buttonContainer}>
         <Button title="Siguiente sin foto" onPress={handleNext} color="gray" />
       </View>
 

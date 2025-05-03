@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useBabyContext } from '../../src/context/BabyContext';
+import { styles } from '../../src/styles/setupStyles';
 
 export default function AlturaScreen() {
   const { updateBabyData } = useBabyContext();
@@ -16,16 +17,18 @@ export default function AlturaScreen() {
   };
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>¿Qué altura tenía tu bebé al nacer?</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>¿Qué altura tenía tu bebé al nacer?</Text>
       <TextInput
         value={altura}
         onChangeText={setAltura}
         placeholder="Altura en cm"
-        style={{ borderBottomWidth: 1, marginVertical: 10 }}
+        style={styles.input}
         keyboardType="numeric"
       />
-      <Button title="Siguiente" onPress={handleNext} />
+      <View style={styles.buttonContainer}>
+        <Button title="Siguiente" onPress={handleNext} color="#007AFF" />
+      </View>
     </View>
   );
 }

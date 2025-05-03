@@ -1,30 +1,31 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useBabyContext } from '../../src/context/BabyContext';
+import { useBabyContext } from '../../src/context/BabyContext';  
+import { useRouter } from 'expo-router'; // Asegúrate de importar esto si estás usando expo-router
+import { styles } from '../../src/styles/setupStyles';
 
 export default function NombreScreen() {
-  const { updateBabyData } = useBabyContext();
-  const [name, setName] = useState('');
-  const router = useRouter();
+  const { babyData, updateBabyData } = useBabyContext();
+  const [name, setName] = useState(babyData.name || ''); 
+  const router = useRouter(); // Aquí estamos usando `useRouter` correctamente
 
-  const handleNext = () => {
-    if (name.trim()) {
-      updateBabyData({ name });
-      router.push('/setup/nacimiento');
-    }
+  const handleSave = () => {
+    updateBabyData({ ...babyData, name });
+    router.push('/setup/nacimiento'); // Esto te redirige al siguiente paso
   };
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>¿Cómo se llama tu bebé?</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>¿Cómo se llama tu bebé?</Text>
       <TextInput
         value={name}
         onChangeText={setName}
         placeholder="Nombre del bebé"
-        style={{ borderBottomWidth: 1, marginVertical: 10 }}
+        style={styles.input}
       />
-      <Button title="Siguiente" onPress={handleNext} />
+      <View style={styles.buttonContainer}>
+        <Button title="Siguiente" onPress={handleSave} color="#007AFF" />
+      </View>
     </View>
   );
 }

@@ -1,16 +1,33 @@
 import { View, Text, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useBabyContext } from '../../src/context/BabyContext';
+import { styles } from '../../src/styles/setupStyles';
 
 export default function PrematuroScreen() {
   const { updateBabyData } = useBabyContext();
   const router = useRouter();
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>¿El parto fue prematuro?</Text>
-      <Button title="Sí" onPress={() => { updateBabyData({ isPremature: true }); router.push('/setup/peso'); }} />
-      <Button title="No" onPress={() => { updateBabyData({ isPremature: false }); router.push('/setup/peso'); }} />
+    <View style={styles.container}>
+      <Text style={styles.title}>¿El parto fue prematuro?</Text>
+      <View style={styles.buttonContainer}>
+        <Button 
+          title="Sí" 
+          onPress={() => { 
+            updateBabyData({ premature: true }); 
+            router.push('/setup/peso'); 
+          }} 
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button 
+          title="No" 
+          onPress={() => { 
+            updateBabyData({ premature: false }); 
+            router.push('/setup/peso'); 
+          }} 
+        />
+      </View>
     </View>
   );
 }

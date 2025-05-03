@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { View, Text, TouchableOpacity, Button } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useBabyContext } from '../../src/context/BabyContext';
+import { styles } from '../../src/styles/setupStyles';
 
 export default function AlimentacionScreen() {
   const { updateBabyData } = useBabyContext();
@@ -17,7 +18,7 @@ export default function AlimentacionScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.question}>¿Qué tipo de alimentación está recibiendo tu bebé?</Text>
+      <Text style={styles.title}>¿Qué tipo de alimentación está recibiendo tu bebé?</Text>
 
       {['Lactancia', 'Biberón', 'Mixta'].map((tipo) => (
         <TouchableOpacity
@@ -32,28 +33,9 @@ export default function AlimentacionScreen() {
         </TouchableOpacity>
       ))}
 
-      <View style={{ marginTop: 20 }}>
-        <Button title="Siguiente" onPress={handleNext} />
+      <View style={styles.buttonContainer}>
+        <Button title="Siguiente" onPress={handleNext} color="#007AFF" />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { padding: 20 },
-  question: { fontSize: 16, marginBottom: 20 },
-  optionButton: {
-    padding: 15,
-    marginVertical: 5,
-    borderRadius: 10,
-    backgroundColor: '#ddd',
-    alignItems: 'center',
-  },
-  selectedOption: {
-    backgroundColor: '#4CAF50',
-  },
-  optionText: {
-    fontSize: 16,
-    color: '#000',
-  },
-});

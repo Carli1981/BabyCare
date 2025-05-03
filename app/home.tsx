@@ -1,44 +1,91 @@
 import { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ImageBackground,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import { getBabyData } from '../src/services/babyService';
-import { auth } from '../src/config/firebase'; // Asegúrate que exista esta importación para obtener el userId
+import { auth } from '../src/config/firebase';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
-  const [babyData, setBabyData] = useState<any>(null);
+  const [babyInfo, setBabyInfo] = useState<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBabyData = async () => {
       const userId = auth.currentUser?.uid;
-      if (!userId) {
-        console.error('No se encontró usuario autenticado');
-        return;
+      if (userId) {
+        const babyData = await getBabyData(userId);
+        setBabyInfo(babyData);
       }
-      const data = await getBabyData(userId);
-      setBabyData(data);
     };
-
     fetchBabyData();
   }, []);
 
-  if (!babyData) return (
-    <View style={{ padding: 20 }}>
-      <Text>Cargando...</Text>
-    </View>
-  );
+  const goToProfile = () => {
+    router.push('/perfil');
+  };
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text>Nombre del bebé: {babyData.name}</Text>
-      <Text>Fecha de nacimiento: {new Date(babyData.birthdate).toLocaleDateString()}</Text>
-      <Text>Género: {babyData.gender}</Text>
-      <Text>¿Parto prematuro?: {babyData.isPremature ? 'Sí' : 'No'}</Text>
-      <Text>Peso: {babyData.weightKg} kg {babyData.weightG} g</Text>
-      <Text>Altura: {babyData.heightCm} cm</Text>
-      <Text>Tipo de alimentación: {babyData.feedingType}</Text>
-
-      {babyData.photoUri && (
-        <Text>Foto del bebé: {babyData.photoUri}</Text>
-      )}
-    </View>
+    <ImageBackground
+      source={require('../assets/FondoHome.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        {babyInfo && (
+          <View style={styles.profileContainer}>
+            <TouchableOpacity onPress={goToProfile} style={{ alignItems: 'center' }}>
+              <Image
+                source={
+                  babyInfo.photoUri
+                    ? { uri: babyInfo.photoUri }
+                    : require('../assets/baby-icon.png')
+                }
+                style={styles.profileImage}
+              />
+              <Text style={styles.profileText}>Ver perfil</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </ImageBackground>
   );
 }
+
+const { width, height } = Dimensions.get('window');
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: width,
+    height: height,
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingTop: 40,
+    paddingRight: 20,
+  },
+  profileContainer: {
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: '#007AFF',
+  },
+  profileText: {
+    color: '#007AFF',
+    fontSize: 12,
+    marginTop: 4,
+  },
+});

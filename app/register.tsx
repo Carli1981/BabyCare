@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import { registerUser } from '../src/services/authService';
 import { useRouter } from 'expo-router';
+import { getBabyData } from '../src/services/babyService';  // Correcto
+import { auth } from '../src/config/firebase';  // Correcto
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
@@ -23,10 +25,28 @@ export default function RegisterScreen() {
     }
 
     try {
+      // Registrar usuario
       await registerUser(email, password);
-      router.replace('/home'); // Redirige a la pantalla principal
+      
+      // Obtener el ID del usuario
+      const userId = auth.currentUser?.uid;
+      if (!userId) {
+        setError("No se pudo obtener el ID del usuario.");
+        return;
+      }
+
+      // Verificar si el usuario tiene datos del bebé
+      const babyData = await getBabyData(userId);
+
+      // Redirigir según si el usuario tiene o no datos del bebé
+      if (babyData) {
+        router.replace('/home'); // Si tiene datos del bebé, redirigir a home
+      } else {
+        router.replace('/setup'); // Si no tiene datos, redirigir a setup
+      }
+      
     } catch (e: any) {
-      setError(e.message); // Muestra el error real
+      setError(e.message); // Mostrar error
       console.error('Error al registrar usuario:', e);
     }
   };
